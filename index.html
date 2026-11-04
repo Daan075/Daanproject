@@ -1,0 +1,53 @@
+<!doctype html>
+<html lang="nl">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Temperatuur Uitgeest</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <header>
+    <h1>Temperatuur Uitgeest</h1>
+    <p class="sub">Dit jaar vergeleken met dezelfde dag vorig jaar</p>
+    <div class="controls">
+      <label>Periode
+        <select id="range">
+          <option value="14">Laatste 14 dagen</option>
+          <option value="30" selected>Laatste 30 dagen</option>
+          <option value="60">Laatste 60 dagen</option>
+          <option value="90">Laatste 90 dagen</option>
+        </select>
+      </label>
+    </div>
+  </header>
+
+  <main>
+    <div class="legend">
+      <span><i class="dot now"></i><span id="lbl-now">Dit jaar</span></span>
+      <span><i class="dot prev"></i><span id="lbl-prev">Vorig jaar</span></span>
+    </div>
+    <div id="status" class="status">Gegevens laden…</div>
+    <ul id="days" class="days"></ul>
+  </main>
+
+  <dialog id="detail">
+    <div class="dlg-head">
+      <h2 id="detail-title"></h2>
+      <button id="close" aria-label="Sluiten">✕</button>
+    </div>
+    <div id="detail-summary" class="summary"></div>
+    <div class="chart-wrap"><canvas id="chart"></canvas></div>
+    <p id="detail-note" class="note"></p>
+  </dialog>
+
+  <footer>
+    Bron: <a href="https://open-meteo.com/" target="_blank" rel="noopener">Open-Meteo</a> —
+    historische data uit ERA5-heranalyse (ECMWF / Copernicus), de meest recente dagen
+    uit het KNMI HARMONIE-model. Locatie: Uitgeest (52,53° N, 4,71° O). Temperatuur op 2 m hoogte.
+  </footer>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>
