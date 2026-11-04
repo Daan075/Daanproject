@@ -55,3 +55,7 @@ footer a { color: inherit; }
   .date { grid-column: 1 / -1; }
   .col { text-align: left; }
 }
+.controls { display: flex; flex-wrap: wrap; gap: 10px; align-items: center; }
+.install { padding: 7px 12px; border-radius: 8px; border: none; background: var(--now); color: #fff;
+  font-size: .95rem; cursor: pointer; }
+body { padding-top: env(safe-area-inset-top); padding-bottom: env(safe-area-inset-bottom); }

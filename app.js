@@ -169,3 +169,21 @@ $("#close").addEventListener("click", () => $("#detail").close());
 $("#detail").addEventListener("click", (e) => { if (e.target === e.currentTarget) e.currentTarget.close(); });
 $("#range").addEventListener("change", (e) => load(Number(e.target.value)));
 load(Number($("#range").value));
+
+// ---------- installeerbare app (PWA) ----------
+if ("serviceWorker" in navigator && location.protocol !== "file:") {
+  navigator.serviceWorker.register("sw.js");
+}
+let installPrompt;
+window.addEventListener("beforeinstallprompt", (e) => {
+  e.preventDefault();
+  installPrompt = e;
+  $("#install").hidden = false;
+});
+$("#install").addEventListener("click", async () => {
+  if (!installPrompt) return;
+  installPrompt.prompt();
+  await installPrompt.userChoice;
+  installPrompt = null;
+  $("#install").hidden = true;
+});
