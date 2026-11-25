@@ -1,0 +1,110 @@
+<!doctype html>
+<html lang="nl">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="referrer" content="strict-origin-when-cross-origin">
+  <title>Video Zoeker</title>
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%234f46e5'/%3E%3Ccircle cx='28' cy='28' r='13' fill='none' stroke='white' stroke-width='6'/%3E%3Cpath d='M38 38l12 12' stroke='white' stroke-width='7' stroke-linecap='round'/%3E%3C/svg%3E">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <header class="topbar">
+    <div class="brand">
+      <span class="logo" aria-hidden="true"></span>
+      <div>
+        <h1>Video Zoeker</h1>
+        <p>Laat AI een YouTube-video of afgelopen Twitch-stream bekijken en zoek erin.</p>
+      </div>
+    </div>
+  </header>
+
+  <div id="warnings"></div>
+
+  <main class="layout">
+    <aside class="sidebar">
+      <form id="add-form" class="card add">
+        <label for="url">Link naar een video of Twitch-VOD</label>
+        <div class="row">
+          <input id="url" type="url" placeholder="https://www.youtube.com/watch?v=… of https://www.twitch.tv/videos/…" required autocomplete="off">
+          <button type="submit" class="primary" id="add-btn">Analyseren</button>
+        </div>
+        <p class="hint" id="add-msg"></p>
+      </form>
+      <h2 class="section-title">Video's</h2>
+      <ul id="video-list" class="video-list"></ul>
+      <p id="empty-list" class="muted small">Nog geen video's. Plak hierboven een link om te beginnen.</p>
+    </aside>
+
+    <section id="detail" class="detail">
+      <div class="welcome card">
+        <h2>Zo werkt het</h2>
+        <ol>
+          <li>Plak de link van een YouTube-video of een <strong>afgelopen</strong> Twitch-stream.</li>
+          <li>De app downloadt de video, zet de spraak om in tekst, herkent geluiden (zoals lachen) en laat Claude de beelden bekijken.</li>
+          <li>Stel daarna vragen als <em>“Geef alle momenten waarop hij lacht”</em> of <em>“Wanneer begint missie 3?”</em> en klik op een tijdstip om ernaartoe te springen.</li>
+        </ol>
+      </div>
+    </section>
+  </main>
+
+  <template id="detail-tpl">
+    <div class="video-head">
+      <div class="titles">
+        <h2 class="v-title"></h2>
+        <p class="v-sub muted"></p>
+      </div>
+      <div class="actions">
+        <a class="btn ghost v-open" target="_blank" rel="noopener">Openen</a>
+        <button class="btn ghost v-retry" type="button">Opnieuw proberen</button>
+        <button class="btn danger-ghost v-delete" type="button">Verwijderen</button>
+      </div>
+    </div>
+
+    <div class="v-progress card"></div>
+
+    <div class="player-wrap">
+      <div class="player" id="player"></div>
+    </div>
+
+    <nav class="tabs" role="tablist">
+      <button role="tab" data-tab="search" class="active">Slim zoeken</button>
+      <button role="tab" data-tab="transcript">Transcript</button>
+      <button role="tab" data-tab="timeline">Alles wat de AI zag</button>
+    </nav>
+
+    <div class="tab-panel" data-panel="search">
+      <form class="search-form">
+        <input class="q" type="text" placeholder="Bijv. “Geef alle momenten waarop hij moet lachen”" autocomplete="off">
+        <button class="primary" type="submit">Zoeken</button>
+      </form>
+      <div class="chips examples"></div>
+      <div class="quick">
+        <h3 class="mini-title">Direct uit de geluidsherkenning <span class="muted">(gratis, zonder AI-vraag)</span></h3>
+        <div class="chips sounds"></div>
+      </div>
+      <div class="results"></div>
+      <div class="history"></div>
+    </div>
+
+    <div class="tab-panel" data-panel="transcript" hidden>
+      <input class="filter" type="search" placeholder="Zoek letterlijk in wat er gezegd wordt…">
+      <p class="muted small t-count"></p>
+      <ul class="lines transcript-lines"></ul>
+    </div>
+
+    <div class="tab-panel" data-panel="timeline" hidden>
+      <p class="muted small">Dit is precies wat de AI van de video weet: de transcriptie, herkende geluiden en de beschrijving van de beelden.</p>
+      <div class="chips timeline-filter">
+        <button class="chip active" data-kind="all">Alles</button>
+        <button class="chip" data-kind="say">Spraak</button>
+        <button class="chip" data-kind="sound">Geluid</button>
+        <button class="chip" data-kind="see">Beeld</button>
+      </div>
+      <ul class="lines timeline-lines"></ul>
+    </div>
+  </template>
+
+  <script src="app.js"></script>
+</body>
+</html>
