@@ -38,10 +38,18 @@ def video_dir(video_id: str) -> Path:
 
 def write_json(path: Path, data: Any) -> None:
     # Bewust geen mkdir: een verwijderde video mag niet "herrijzen" door een late schrijfactie.
-    tmp = path.with_suffix(path.suffix + ".tmp")
+    tmp = path.with_suffix(path.suffix + f".{threading.get_ident()}.tmp")
     with open(tmp, "w", encoding="utf-8") as f:
         json.dump(data, f, ensure_ascii=False, indent=1)
-    os.replace(tmp, path)
+    # Op Windows mislukt vervangen even als iemand het bestand op dat moment leest: kort opnieuw proberen.
+    for attempt in range(20):
+        try:
+            os.replace(tmp, path)
+            return
+        except PermissionError:
+            if attempt == 19:
+                raise
+            time.sleep(0.05)
 
 
 def read_json(path: Path, default: Any = None) -> Any:

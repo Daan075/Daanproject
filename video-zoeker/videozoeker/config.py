@@ -44,6 +44,9 @@ VIDEO_MAX_HEIGHT = _int("VIDEO_MAX_HEIGHT", 480)
 # Video- en audiobestand na de analyse weggooien (frames en resultaten blijven bewaard).
 # Voor YouTube/Twitch speelt de app de video toch af via de officiële speler.
 KEEP_MEDIA = _bool("KEEP_MEDIA", False)
+# Cookies uit je browser gebruiken (bv. "chrome", "firefox", "edge"): nodig voor Twitch-VOD's
+# die alleen voor abonnees zijn, of als YouTube vraagt te bevestigen dat je geen bot bent.
+COOKIES_FROM_BROWSER = os.environ.get("COOKIES_FROM_BROWSER", "").strip()
 
 # --- Transcriptie (spraak naar tekst, lokaal met faster-whisper) ---------
 WHISPER_MODEL = os.environ.get("WHISPER_MODEL", "small")
@@ -57,7 +60,7 @@ AUDIO_EVENTS = _bool("AUDIO_EVENTS", True)
 AUDIO_MODEL = os.environ.get("AUDIO_MODEL", "MIT/ast-finetuned-audioset-10-10-0.4593")
 AUDIO_WINDOW_SECONDS = _float("AUDIO_WINDOW_SECONDS", 10.0)
 AUDIO_HOP_SECONDS = _float("AUDIO_HOP_SECONDS", 5.0)
-AUDIO_THRESHOLD = _float("AUDIO_THRESHOLD", 0.25)
+AUDIO_THRESHOLD = _float("AUDIO_THRESHOLD", 0.2)
 LAUGH_THRESHOLD = _float("LAUGH_THRESHOLD", 0.12)
 
 # --- Beeldanalyse met Claude ----------------------------------------------

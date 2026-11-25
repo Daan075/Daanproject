@@ -15,12 +15,15 @@ class DownloadError(Exception):
 
 
 def _base_opts() -> dict:
-    return {
+    opts = {
         "quiet": True,
         "no_warnings": True,
         "noplaylist": True,
         "noprogress": True,
     }
+    if config.COOKIES_FROM_BROWSER:
+        opts["cookiesfrombrowser"] = (config.COOKIES_FROM_BROWSER,)
+    return opts
 
 
 def probe(url: str) -> dict:
@@ -154,4 +157,11 @@ def download_subtitles(url: str, info: dict, dest: Path) -> tuple[Path, str] | N
 
 
 def _clean(message: str) -> str:
-    return message.replace("ERROR: ", "").strip()
+    message = message.replace("ERROR: ", "").strip()
+    low = message.lower()
+    if "sign in" in low or "login" in low or "subscriber" in low or "not a bot" in low:
+        message += (" — Tip: zet COOKIES_FROM_BROWSER=chrome (of firefox/edge) in .env, zodat de app je "
+                    "ingelogde browsersessie gebruikt.")
+    elif "javascript" in low or "js runtime" in low or "n challenge" in low or "signature" in low:
+        message += " — Tip: installeer Deno (zie README) en werk yt-dlp bij met: pip install -U \"yt-dlp[default]\""
+    return message

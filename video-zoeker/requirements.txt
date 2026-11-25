@@ -1,0 +1,10 @@
+anthropic>=2.14
+fastapi>=0.115
+uvicorn[standard]>=0.30
+yt-dlp[default]>=2025.11.12
+faster-whisper>=1.1
+transformers>=4.45
+torch>=2.4
+numpy>=1.26
+pillow>=10.0
+python-dotenv>=1.0

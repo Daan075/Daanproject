@@ -23,3 +23,11 @@ De app opent dan zonder browserbalk en toont zonder internet de laatst geladen g
   (die nog niet in het archief staan) en de rest van vandaag. Deze worden gemarkeerd als *voorlopig*.
 
 Locatie: Uitgeest, 52,529° N, 4,709° O.
+
+---
+
+# Video Zoeker
+
+In de map [`video-zoeker/`](video-zoeker/) staat een tweede app: laat AI een YouTube-video of afgelopen
+Twitch-stream bekijken en zoek erin ("geef alle momenten waarop hij lacht", "wanneer begint missie 3?").
+Deze draait op je eigen computer; zie [`video-zoeker/README.md`](video-zoeker/README.md) voor de installatie.

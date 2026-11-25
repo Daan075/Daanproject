@@ -51,7 +51,14 @@ def _meta_or_404(video_id: str) -> dict:
 
 def _public(meta: dict) -> dict:
     vdir = storage.video_dir(meta["id"])
-    return {**meta, "has_file": download.find_video(vdir) is not None}
+    out = {**meta, "has_file": download.find_video(vdir) is not None}
+    if not out.get("thumbnail"):
+        # Geen plaatje van het platform: neem een frame uit de video zelf.
+        for name in ("f_000002.jpg", "f_000001.jpg"):
+            if (vdir / storage.FRAMES_DIR / name).exists():
+                out["thumbnail"] = f"/api/videos/{meta['id']}/frames/{name}"
+                break
+    return out
 
 
 @app.get("/api/status")

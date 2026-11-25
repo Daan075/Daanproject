@@ -69,7 +69,10 @@ const SOUND_NL = {
   Applause: "Applaus", Cheering: "Gejuich", Music: "Muziek", Gunshot: "Schoten",
   "Gunshot, gunfire": "Schoten", Explosion: "Explosie", "Crying, sobbing": "Huilen", Singing: "Zingen",
   Whoop: "Joelen", Clapping: "Klappen", Sigh: "Zuchten", Gasp: "Naar adem happen", Cough: "Hoesten",
-  Burping: "Boeren", "Burping, eructation": "Boeren", Dog: "Hond", "Cat": "Kat", Video_game_music: "Gamemuziek",
+  Burping: "Boeren", "Burping, eructation": "Boeren", Dog: "Hond", Bark: "Blaffen", Cat: "Kat", Meow: "Miauw",
+  "Video game music": "Gamemuziek", Speech: "Spraak", Whistling: "Fluiten", Siren: "Sirene", Thunder: "Onweer",
+  "Glass": "Glas", Shatter: "Brekend glas", Bang: "Knal", Slam: "Klap", Knock: "Kloppen", Telephone: "Telefoon",
+  Typing: "Typen", "Computer keyboard": "Toetsenbord", Engine: "Motor", Car: "Auto", Vehicle: "Voertuig",
 };
 
 // ---------- toestand ----------
@@ -199,6 +202,7 @@ function selectFromHash() {
   const meta = state.videos.find((v) => v.id === id);
   if (!meta) { resetDetail(); return; }
   mountDetail(meta);
+  if (window.matchMedia("(max-width: 900px)").matches) $("#detail").scrollIntoView({ behavior: "smooth", block: "start" });
 }
 
 let welcomeHTML = null;
@@ -266,7 +270,7 @@ function updateDetail(meta) {
   $(".v-sub", d).textContent = bits.join(" · ");
   const open = $(".v-open", d);
   open.href = meta.url;
-  open.textContent = `Openen op ${platformName(meta.platform)}`;
+  open.textContent = meta.platform === "other" ? "Origineel openen" : `Openen op ${platformName(meta.platform)}`;
   $(".v-retry", d).hidden = meta.status !== "error";
 
   renderProgress(meta);
@@ -536,8 +540,9 @@ function showSoundResults(id, label, events) {
   const merged = [];
   for (const e of [...events].sort((a, b) => a.start - b.start)) {
     const last = merged[merged.length - 1];
-    if (last && e.start <= last.end + 2) { last.end = Math.max(last.end, e.end); last.score = Math.max(last.score, e.score); last.labels.add(e.label); }
-    else merged.push({ start: e.start, end: e.end, score: e.score, labels: new Set([e.label]) });
+    const kinds = (e.kinds && e.kinds.length ? e.kinds : [e.label]).map((k) => SOUND_NL[k] || k);
+    if (last && e.start <= last.end + 2) { last.end = Math.max(last.end, e.end); last.score = Math.max(last.score, e.score); kinds.forEach((k) => last.labels.add(k)); }
+    else merged.push({ start: e.start, end: e.end, score: e.score, labels: new Set(kinds) });
   }
   const box = $("#detail .results");
   box.replaceChildren(el("div", { class: "answer card" },

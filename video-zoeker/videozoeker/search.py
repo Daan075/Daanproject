@@ -63,8 +63,10 @@ def build_lines(video_id: str) -> list[tuple[float, str]]:
     for seg in storage.read_json(vdir / storage.TRANSCRIPT, {}).get("segments", []):
         lines.append((seg["start"], 0, f"[{hms(seg['start'])}] SAY: {seg['text']}"))
     for ev in storage.read_json(vdir / storage.AUDIO_EVENTS, {}).get("events", []):
+        kinds = [k for k in ev.get("kinds", []) if k != ev["label"]]
+        detail = f" ({', '.join(kinds)})" if kinds else ""
         lines.append((ev["start"], 1,
-                      f"[{hms(ev['start'])}-{hms(ev['end'])}] SOUND: {ev['label']} {round(ev['score'] * 100)}%"))
+                      f"[{hms(ev['start'])}-{hms(ev['end'])}] SOUND: {ev['label']}{detail} {round(ev['score'] * 100)}%"))
     for fr in storage.read_json(vdir / storage.FRAMES, {}).get("frames", []):
         if not fr.get("description"):
             continue

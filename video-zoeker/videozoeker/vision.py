@@ -51,10 +51,16 @@ SCHEMA = {
 
 def _signature(path: Path) -> np.ndarray:
     with Image.open(path) as im:
-        return np.asarray(im.convert("L").resize((64, 36)), dtype=np.float32)
+        return np.asarray(im.convert("L").resize((160, 90)), dtype=np.float32)
 
 
-def mark_duplicates(frames: list[dict], frames_dir: Path, threshold: float = 3.0) -> None:
+def _changed(a: np.ndarray, b: np.ndarray) -> bool:
+    # Telt het aandeel pixels dat duidelijk anders is. Een gemiddelde verschil zou een
+    # kleine maar belangrijke verandering (bv. een missietitel in beeld) wegpoetsen.
+    return float((np.abs(a - b) > 25).mean()) > 0.003
+
+
+def mark_duplicates(frames: list[dict], frames_dir: Path) -> None:
     """Frames die vrijwel gelijk zijn aan het vorige verschillende frame hoeven niet naar Claude."""
     prev_sig = None
     prev_t = None
@@ -64,7 +70,7 @@ def mark_duplicates(frames: list[dict], frames_dir: Path, threshold: float = 3.0
                 prev_sig, prev_t = _signature(frames_dir / f["file"]), f["t"]
             continue
         sig = _signature(frames_dir / f["file"])
-        if prev_sig is not None and float(np.abs(sig - prev_sig).mean()) < threshold:
+        if prev_sig is not None and not _changed(sig, prev_sig):
             f["same_as"] = prev_t
         else:
             prev_sig, prev_t = sig, f["t"]
